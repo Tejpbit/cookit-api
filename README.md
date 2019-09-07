@@ -1,7 +1,5 @@
-# ktor-starter
-Starter project with jwt auth and exposed. Find the associated blog post at: https://www.thebookofjoel.com/blog/kotlin-ktor-exposed-postgres
-
-This is a project to help get started quickly with Ktor, Exposed, Postgres and Flywaydb.
+# CookIT API
+The backend of CookIT, a cooking application meant to deal with the hazzel of converting types and reading recipies.
 
 ## Running the project
 
