@@ -77,7 +77,7 @@ fun Application.module(testing: Boolean = false) {
             log.debug(post.toString())
             val user = userService.getUserByEmail(post.email)
             if (user == null || !BCrypt.checkpw(post.password, user.password)) {
-                call.respond(HttpStatusCode.Unauthorized, "Ivalid Credentials")
+                call.respond(HttpStatusCode.Unauthorized, errorResponse("Invalid Credentials"))
                 error("Invalid Credentials")
             }
             call.respond(mapOf("token" to simpleJwt.sign(user.email)))
@@ -87,14 +87,14 @@ fun Application.module(testing: Boolean = false) {
 
             val user = userService.getUserByEmail(post.email)
             if (user != null) {
-                call.respond(HttpStatusCode.Conflict, "User with that email already exists")
+                call.respond(HttpStatusCode.Conflict, errorResponse("User with that email already exists"))
                 error("User with that email already exists")
             }
 
             userService.createUser(NewUser(post.email, post.password))
             val newUser = userService.getUserByEmail(post.email)
             if (newUser == null) {
-                call.respond(HttpStatusCode.InternalServerError, "Could not create user")
+                call.respond(HttpStatusCode.InternalServerError, errorResponse("Could not create user"))
                 error("Could not create user")
             }
             call.respond(HttpStatusCode.Created, mapOf("token" to simpleJwt.sign(newUser.email)))
@@ -114,7 +114,7 @@ fun Application.module(testing: Boolean = false) {
                 val post = call.receive<NewIngredient>()
                 val ingredient = ingredientService.getIngredientByName(post.name)
                 if (ingredient != null) {
-                    call.respond(HttpStatusCode.BadRequest, "Ingredient already exists")
+                    call.respond(HttpStatusCode.BadRequest, errorResponse("Ingredient already exists"))
                     error("Ingredient already exists")
                 }
                 ingredientService.createIngredient(NewIngredient(post.name, post.density))
@@ -144,4 +144,6 @@ fun Application.module(testing: Boolean = false) {
     }
 
 }
+
+private fun errorResponse(message: String) = mapOf("error" to message)
 
